@@ -1,0 +1,11 @@
+# Git Ignore file
+
+# Dependency directory
+node_modules
+package-lock.json
+
+# truffle build directory
+build/
+
+# macs
+*/**/.DS_Store
