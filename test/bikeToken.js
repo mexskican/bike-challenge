@@ -2,6 +2,11 @@ const BikeToken = artifacts.require('./BikeToken.sol');
 
 contract('BikeToken', function(accounts) {
 
+    let isException = function (error) {
+        let strError = error.toString();
+        return strError.includes('invalid opcode') || strError.includes('invalid JUMP') || strError.includes('revert');
+    };
+
 	const ownerAddress = accounts[0];
     const renter1Address = accounts[1];
     const renter2Address = accounts[2];
@@ -29,4 +34,14 @@ contract('BikeToken', function(accounts) {
         assert.equal(14159 * 10 ** 5, balance1Renter2);
     });
 
+    it("It should let the user close the sales", async() => {
+        const bikeTokenContract = await BikeToken.new(initialBikeTokenSupply, {from: ownerAddress, gas: gasAmount});
+        const initialBuyerBalance = web3.eth.getBalance(renter1Address);
+        await bikeTokenContract.closeSales({from: ownerAddress});
+        try {
+            await bikeTokenContract.buyTokens({from: renter1Address, value: 1 * 10 ** 18});
+        } catch (e) {
+            assert(isException(e))
+        }
+    });
 });
