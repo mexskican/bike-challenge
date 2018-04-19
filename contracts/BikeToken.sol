@@ -78,8 +78,8 @@ contract BikeToken is StandardToken {
 
     function buyTokens() public payable isOpen {
         uint tokens = (msg.value.div(10 ** 13)).mul(PRICE);
-        balances[msg.sender] = balances[msg.sender] + tokens;
-        totalSupply = totalSupply + tokens;
+        balances[msg.sender] = balances[msg.sender].add(tokens);
+        totalSupply = totalSupply.add(tokens);
         require(founder.call.value(msg.value)());
     }
 
