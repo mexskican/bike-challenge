@@ -144,7 +144,11 @@ contract('Bike', function(accounts) {
         await bikeTokenContract.transfer(renter1Address, 4800 * 10**6, {from: ownerAddress});
         await bikeTokenContract.approve(bikeContract.address, 4800 * 10**6, {from: renter1Address});
         await bikeContract.addBike(15, {from: ownerAddress});
-        await bikeContract.rentBike(15, 0, {from: renter1Address});
+        try {
+            await bikeContract.rentBike(15, 0, {from: renter1Address});
+        } catch (e) {
+            assert(isException(e))
+        }
         const bikeRented = await bikeContract.getRentalBikeId(renter1Address);
         assert.equal(0, bikeRented);
     });

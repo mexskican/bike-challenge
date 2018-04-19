@@ -79,9 +79,7 @@ contract Bike is Ownable {
 	}
 
 	function addBike(uint _bikeId) public onlyOwner isNotAdded(_bikeId) returns (bool success) {
-		if (_bikeId == 0) {
-			return false;
-		}
+		require(_bikeId != 0);
 		bikes[_bikeId] = BikeStruct(_bikeId, true, true);
 		emit bikeAdded(_bikeId);
 		return true;
@@ -94,9 +92,7 @@ contract Bike is Ownable {
 	}
 
 	function rentBike(uint _bikeId, uint _hoursRent) public onlyAvailable(_bikeId) isNotRenting returns (bool success) {
-		if (_hoursRent < 1 || _hoursRent > 24) {
-			return false;
-		}
+		require(_hoursRent > 1 && _hoursRent < 24);
 		uint returnTime = now.add(_hoursRent.mul(1 hours));
 		uint price = _hoursRent.mul(hourlyCost);
 		rentals[msg.sender] = Rental(_bikeId, msg.sender, _hoursRent, price, returnTime, true);
